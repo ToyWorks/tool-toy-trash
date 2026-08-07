@@ -11,7 +11,7 @@ Agent Skills are folders of instructions, scripts, and resources that agents can
 
 | Skill | Description |
 | ----- | ----------- |
-| t3-hardware-scoring | The MantaBase T3 Hardware Audit System utilizes Brand Blinding information filtering, a Triple-Auditor specialized scoring process, and a Peer Review mechanism to objectively classify items as Tool, Toy, or Trash based on design theory. |
+| t3-hardware-scoring | The MantaBase T3 Hardware Audit System classifies a hardware product as Tool, Toy, or Trash. It brand-blinds the source material, scores it with three independent auditors working from fixed rubrics and verbatim evidence, revalidates the high-risk findings with an Eagle Eye pass, and applies a safety veto in the final synthesis. |
 
 <!-- END:Available-Skills -->
 
@@ -34,14 +34,16 @@ npx skills add toyworks/agent-skills --list
 
 ### Claude Code Plugin
 
-Install via Claude Code's plugin system:
+Install via Claude Code's plugin system. The marketplace is defined in
+[.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) and is named
+`toyworks-agent-skills`:
 
 ```bash
-# Add the marketplace
-/plugin marketplace add toyworks/agent-skills
+/plugin marketplace add ToyWorks/agent-skills
+```
 
-# Install specific skill
-/plugin install t3-hardware-scoring-skill
+```bash
+/plugin install t3-hardware-scoring@toyworks-agent-skills
 ```
 
 > Claude Code plugins are also supported in Factory's [Droid](https://docs.factory.ai/cli/configuration/plugins#claude-code-compatibility).
@@ -60,30 +62,35 @@ npx ctx7 skills install /toyworks/agent-skills
 
 ## Adding New Skills
 
-Use the included script to add new skills:
+Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`,
+`description`), add any supporting `references/` and `scripts/`, then add a row
+to the table above.
+
+The `description` is what an agent matches against when deciding whether to load
+the skill, so write it as a trigger, not a summary: name the user phrasings and
+artifacts that should invoke it.
+
+## Testing
+
+Skills that ship scripts should ship tests for them. `t3-hardware-scoring` is
+the reference:
 
 ```bash
-node scripts/add-skill.js <skill-name> "<description>"
+skills/t3-hardware-scoring/tests/run_tests.sh
 ```
 
-Example:
+Its `tests/fixtures/` holds a complete worked example — a fictional product's
+brand-blinded source text, the three auditor reports, and the classification
+they synthesize to. It serves as both a regression test and the reference for
+what correct output looks like.
 
-```bash
-node scripts/add-skill.js t3-hardware-scoring "The MantaBase T3 Hardware Audit System utilizes Brand Blinding information filtering, a Triple-Auditor specialized scoring process, and a Peer Review mechanism to objectively classify items as Tool, Toy, or Trash based on design theory."
-```
-
-This will create the skill structure and automatically update this README and the marketplace.json.
-
-## Scripts
-
-| Script | Description |
-| ------ | ----------- |
-| `node scripts/add-skill.js` | Add a new skill to the repository |
-| `node scripts/sync-skills.js` | Sync README and marketplace.json with skills directory |
+CI runs each skill's test suite plus a link check on every push and pull
+request. See [.github/workflows/test.yml](.github/workflows/test.yml).
 
 ## Contributing
 
-We welcome contributions to improve existing skills or add new skills. Please submit a pull request.
+We welcome contributions to improve existing skills or add new skills. Please
+submit a pull request, and make sure `run_tests.sh` passes.
 
 ## License
 

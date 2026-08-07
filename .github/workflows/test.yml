@@ -1,0 +1,24 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  t3-hardware-scoring:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # No pip install step: the skill's scripts are stdlib-only by design, so
+      # anyone who installs the skill can run it without a Python environment.
+      - name: Run the T3 test suite
+        run: bash skills/t3-hardware-scoring/tests/run_tests.sh
+
+      - name: Check reference links resolve
+        run: python3 skills/t3-hardware-scoring/tests/check_links.py

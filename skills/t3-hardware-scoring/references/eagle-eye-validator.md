@@ -22,7 +22,21 @@ The main agent passes **file paths** (not inline content) to the validator subag
 - `03-trash-auditor.json` (always, since it contains critical_issues)
 
 ## Output
-Print JSON to stdout (main agent writes file):
+Print JSON to stdout (main agent writes the file).
+
+The main agent applies each adjustment **to the `03-*.json` auditor reports**,
+then re-runs the Step 3.5 merge:
+
+```bash
+python3 scripts/validate_auditor_json.py merge \
+  --tool 03-tool-auditor.json --toy 03-toy-auditor.json \
+  --trash 03-trash-auditor.json --output auditor_reports.json
+```
+
+Do not patch `auditor_reports.json` directly. Totals, section subtotals and
+`critical_issues` all have to stay consistent with the item scores, and only
+re-merging keeps them derived rather than hand-edited — the merge step re-checks
+the arithmetic and refuses inconsistent input.
 
 ```json
 {
@@ -108,15 +122,30 @@ For any item scored 3 (any auditor):
 - If not: downgrade to 2 or 1
 
 ### D) Missed Trigger Spot-check
-Quick scan for the 6 canonical Eagle Eye triggers:
-- Privacy Tension
-- Inconsistent Claims
-- Broken "Never" Promise
-- Price vs. Doubt
-- App Redundancy
-- Architectural Implausibility (v2.1)
+Quick scan for all 14 canonical Eagle Eye triggers. The full conditions,
+evidence requirements, and counterexamples are in the canonical index in
+[trash-red-flags.md](trash-red-flags.md); this is the checklist form.
+
+| Pattern | Item | Fires when |
+| --- | --- | --- |
+| **Core Flaw** | 1.2 | Reviews or testing state the primary marketed capability fails |
+| **Snake Oil** | 1.2 | Health/psych claim + no clinical data + a medical-device disclaimer |
+| **False Pain Point** | 1.2 | The "problem" it solves does not exist for the target user |
+| **Privacy Tension** | 1.5 | Claims local/no-cloud but needs continuous cloud for core features |
+| **Inconsistent Claims** | 1.5 | Official sources contradict each other |
+| **Broken "Never" Promise** | 1.5 | Claims never to listen/store/share data it must transmit to work |
+| **Architectural Implausibility** | 1.5 | On-device AI claim not credible for the disclosed form factor |
+| **Severe Side Effects** | 2.1 | Documented new hazards: overheating, security holes, data loss |
+| **Workflow Sabotage** | 2.1 | Adds massive friction to a previously simple task |
+| **Price vs. Doubt** | 3.2 | Price ≥ $200 AND core capability unreliable or unverified |
+| **Promise vs. Delivery** | 3.2 | Users explicitly mock the hype-versus-reality gap |
+| **Subscription Trap / Brick** | 3.3 | Hardware stops working if the subscription lapses |
+| **App Redundancy** | 4.1 | A free smartphone app does the same thing with less friction |
+| **Delusional Raison d'être** | 4.2 | Unverified premise + 0% adoption or universal panning |
 
 Only flag if **clear textual evidence** exists for a trigger that was missed.
+A missed trigger is reported as an `adjustments[]` entry with `action: "added"`,
+and must also be appended to `critical_issues_final`.
 
 ## Token Guardrails
 - Do NOT re-score every item — only inspect flagged ones

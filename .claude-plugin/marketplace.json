@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "toyworks-agent-skills",
+  "description": "Public agent skills maintained by the ToyWorks Team",
+  "owner": {
+    "name": "ToyWorks Team"
+  },
+  "plugins": [
+    {
+      "name": "t3-hardware-scoring",
+      "description": "Classify a hardware product as Tool, Toy, or Trash. Brand-blinds the source material, scores it with three independent auditors working from fixed rubrics and verbatim evidence, revalidates high-risk findings with an Eagle Eye pass, and applies a safety veto in the final synthesis.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/t3-hardware-scoring"
+      ]
+    }
+  ]
+}

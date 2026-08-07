@@ -269,6 +269,7 @@ Table first, then JSON output; both must be consistent.
     "supports_trash": []
   },
 
+  "litmus_gate": "Yes",
   "litmus_test_result": {
     "test": "Does the data explicitly mention a measurable decrease in task completion time or direct workflow replacement?",
     "answer": "Yes",
@@ -296,6 +297,19 @@ Table first, then JSON output; both must be consistent.
 2. **Information source declaration**: Must declare use of Brand-Blinded information only.
 3. **Evidence-First Scoring**: The AI must extract quotes (`verbatim_evidence`) to justify every single score.
 4. **Litmus Test result**: Must evaluate the strict logic gate.
+5. **Top-level `litmus_gate`**: Required, and must match `litmus_test_result.answer`.
+   `synthesize_results.py` reads this exact field; a missing gate is one of only
+   four primary-classification conditions silently lost.
+
+### Self-check before returning
+
+```bash
+python3 scripts/validate_auditor_json.py validate --role tool 03-tool-auditor.json
+```
+
+Checks the arithmetic, item coverage, and the evidence-first rule. A complete
+passing report is in
+[`../tests/fixtures/golden-ai-pendant/03-tool-auditor.json`](../tests/fixtures/golden-ai-pendant/03-tool-auditor.json).
 
 ## Workflow
 

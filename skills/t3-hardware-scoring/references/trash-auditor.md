@@ -187,19 +187,36 @@ Dieter Rams Ten Principles ("Good Design is...") - Evaluated for **Violations**.
 
 During scoring, if a condition below is met based on the text, the corresponding item **MUST** be scored a **3**, and the `reason` field must start with `"Triggered: [Pattern Name]"`.
 
-| Pattern Name | Corresponding Item | Trigger Condition Summary |
+All 14 patterns, reproduced from the canonical index in
+[trash-red-flags.md](trash-red-flags.md) — read that file for each pattern's
+verbatim-evidence requirement and for the counterexamples that must **not**
+trigger a 3.
+
+| Pattern | Item | Fires when |
 | --- | --- | --- |
-| **Privacy Tension** | 1.5 Honest | Claims local/no-cloud but requires continuous cloud sync for core features. |
-| **Inconsistent Claims** | 1.5 Honest | Marketing says X, spec sheet or teardown proves Y. |
-| **Core Flaw** | 1.2 Useful | User reviews explicitly state the primary advertised feature fails to work. |
-| **Price vs. Doubt** | 3.2 Worth Cost | Costs ≥$200 AND core capability is unverified/hallucinates. |
-| **App Redundancy** | 4.1 Replaceable | Hardware is entirely redundant to a standard smartphone app. |
+| **Core Flaw** | 1.2 | Reviews or testing state the primary marketed capability fails |
+| **Snake Oil** | 1.2 | Health/psych claim + no clinical data + a medical-device disclaimer |
+| **False Pain Point** | 1.2 | The "problem" it solves does not exist for the target user |
+| **Privacy Tension** | 1.5 | Claims local/no-cloud but needs continuous cloud for core features |
+| **Inconsistent Claims** | 1.5 | Official sources contradict each other |
+| **Broken "Never" Promise** | 1.5 | Claims never to listen/store/share data it must transmit to work |
+| **Architectural Implausibility** | 1.5 | On-device AI claim not credible for the disclosed form factor |
+| **Severe Side Effects** | 2.1 | Documented new hazards: overheating, security holes, data loss |
+| **Workflow Sabotage** | 2.1 | Adds massive friction to a previously simple task |
+| **Price vs. Doubt** | 3.2 | Price ≥ $200 AND core capability unreliable or unverified |
+| **Promise vs. Delivery** | 3.2 | Users explicitly mock the hype-versus-reality gap |
+| **Subscription Trap / Brick** | 3.3 | Hardware stops working if the subscription lapses |
+| **App Redundancy** | 4.1 | A free smartphone app does the same thing with less friction |
+| **Delusional Raison d'être** | 4.2 | Unverified premise + 0% adoption or universal panning |
+
+Only items 1.2, 1.5, 2.1, 3.2, 3.3, 4.1 and 4.2 can carry an Eagle Eye trigger.
+The other seven items are scored on the standard 0-3 rubric only.
 
 ## Assessment Report Format
 
 ### 🚨 Strict Output Template (Mandatory)
 
-**Must** follow `trash-auditor-template.md` for the scoring table format.
+**Must** follow [`trash-auditor-template.md`](trash-auditor-template.md) for the scoring table format.
 
 **Mandatory requirements**:
 
@@ -291,6 +308,7 @@ Table first, then JSON output; both must be consistent.
     "supports_toy": []
   },
 
+  "litmus_gate": "Yes",
   "litmus_test_result": {
     "test": "Does the data explicitly show the product causes more friction than the traditional alternative?",
     "answer": "Yes",
@@ -323,6 +341,22 @@ Table first, then JSON output; both must be consistent.
 3. **Evidence-First Scoring**: The AI must extract quotes (`verbatim_evidence`) to justify every single score.
 4. **Eagle Eye Enforcement**: If an Eagle Eye trigger is met, it MUST be noted in the `reason` and score an automatic 3.
 5. **Litmus Test result**: Must evaluate the strict logic gate based purely on data.
+6. **Top-level `litmus_gate`**: Required, and must match `litmus_test_result.answer`.
+   `synthesize_results.py` reads this exact field; a missing gate is one of only
+   four primary-classification conditions silently lost.
+7. **`critical_issues` correspondence**: exactly one entry per `"Triggered:"` item.
+   That array is the sole input to the Eagle Eye Veto — a trigger scored but not
+   recorded there has no effect on the verdict.
+
+### Self-check before returning
+
+```bash
+python3 scripts/validate_auditor_json.py validate --role trash 03-trash-auditor.json
+```
+
+Checks the arithmetic, item coverage, the evidence-first rule, and the
+trigger/`critical_issues` correspondence. A complete passing report is in
+[`../tests/fixtures/golden-ai-pendant/03-trash-auditor.json`](../tests/fixtures/golden-ai-pendant/03-trash-auditor.json).
 
 ## Workflow
 
