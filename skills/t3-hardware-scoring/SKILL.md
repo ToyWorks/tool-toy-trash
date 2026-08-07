@@ -323,6 +323,14 @@ checks that every string in every `verbatim_evidence` array appears in
 `02-brand-blinded.md`. The skill's central claim is zero hallucination, and
 that makes it mechanically checkable rather than merely asserted.
 
+`tests/test_trigger_consistency.py` pins the Eagle Eye trigger set. Four files
+list the triggers, and an auditor subagent reads only one of them — so the
+tables are deliberately duplicated, and pinned instead of de-duplicated. The
+canonical index lives in
+[references/trash-red-flags.md](references/trash-red-flags.md); add a pattern
+there first, then propagate. The test fails if any copy — or the pattern table
+in `validate_auditor_json.py` — drifts.
+
 `tests/check_links.py` verifies that every file the skill tells the agent to
 read actually exists — a dead reference mid-run means the agent improvises the
 rubric.

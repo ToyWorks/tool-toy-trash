@@ -187,13 +187,30 @@ Dieter Rams Ten Principles ("Good Design is...") - Evaluated for **Violations**.
 
 During scoring, if a condition below is met based on the text, the corresponding item **MUST** be scored a **3**, and the `reason` field must start with `"Triggered: [Pattern Name]"`.
 
-| Pattern Name | Corresponding Item | Trigger Condition Summary |
+All 14 patterns, reproduced from the canonical index in
+[trash-red-flags.md](trash-red-flags.md) — read that file for each pattern's
+verbatim-evidence requirement and for the counterexamples that must **not**
+trigger a 3.
+
+| Pattern | Item | Fires when |
 | --- | --- | --- |
-| **Privacy Tension** | 1.5 Honest | Claims local/no-cloud but requires continuous cloud sync for core features. |
-| **Inconsistent Claims** | 1.5 Honest | Marketing says X, spec sheet or teardown proves Y. |
-| **Core Flaw** | 1.2 Useful | User reviews explicitly state the primary advertised feature fails to work. |
-| **Price vs. Doubt** | 3.2 Worth Cost | Costs ≥$200 AND core capability is unverified/hallucinates. |
-| **App Redundancy** | 4.1 Replaceable | Hardware is entirely redundant to a standard smartphone app. |
+| **Core Flaw** | 1.2 | Reviews or testing state the primary marketed capability fails |
+| **Snake Oil** | 1.2 | Health/psych claim + no clinical data + a medical-device disclaimer |
+| **False Pain Point** | 1.2 | The "problem" it solves does not exist for the target user |
+| **Privacy Tension** | 1.5 | Claims local/no-cloud but needs continuous cloud for core features |
+| **Inconsistent Claims** | 1.5 | Official sources contradict each other |
+| **Broken "Never" Promise** | 1.5 | Claims never to listen/store/share data it must transmit to work |
+| **Architectural Implausibility** | 1.5 | On-device AI claim not credible for the disclosed form factor |
+| **Severe Side Effects** | 2.1 | Documented new hazards: overheating, security holes, data loss |
+| **Workflow Sabotage** | 2.1 | Adds massive friction to a previously simple task |
+| **Price vs. Doubt** | 3.2 | Price ≥ $200 AND core capability unreliable or unverified |
+| **Promise vs. Delivery** | 3.2 | Users explicitly mock the hype-versus-reality gap |
+| **Subscription Trap / Brick** | 3.3 | Hardware stops working if the subscription lapses |
+| **App Redundancy** | 4.1 | A free smartphone app does the same thing with less friction |
+| **Delusional Raison d'être** | 4.2 | Unverified premise + 0% adoption or universal panning |
+
+Only items 1.2, 1.5, 2.1, 3.2, 3.3, 4.1 and 4.2 can carry an Eagle Eye trigger.
+The other seven items are scored on the standard 0-3 rubric only.
 
 ## Assessment Report Format
 

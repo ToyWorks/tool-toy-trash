@@ -38,20 +38,20 @@ A trigger is not optional — if the condition is met, the score **must** be 3.
 
 | Pattern | Item | Fires when |
 |---------|------|-----------|
-| Core Flaw | 1.2 | Reviews state the primary marketed capability fails |
-| Snake Oil | 1.2 | Health/psych claim + no clinical data + medical-device disclaimer |
-| False Pain Point | 1.2 | The "problem" it solves does not exist for the target user |
-| Privacy Tension | 1.5 | Claims local/no-cloud but needs continuous cloud for core features |
-| Inconsistent Claims | 1.5 | Official sources contradict each other |
-| Broken "Never" Promise | 1.5 | Claims never to listen/store/share data it must transmit to work |
-| Architectural Implausibility | 1.5 | On-device AI claim not credible for the disclosed form factor |
-| Severe Side Effects | 2.1 | Documented new hazards (overheating, security holes, data loss) |
-| Workflow Sabotage | 2.1 | Adds massive friction to a previously simple task |
-| Price vs. Doubt | 3.2 | Price ≥ $200 AND core capability unreliable or unverified |
-| Promise vs. Delivery | 3.2 | Users explicitly mock the hype-vs-reality gap |
-| Subscription Trap / Brick | 3.3 | Hardware stops working if the subscription lapses |
-| App Redundancy | 4.1 | A free smartphone app does the same thing with less friction |
-| Delusional Raison d'être | 4.2 | Unverified premise + 0% adoption or universal panning |
+| **Core Flaw** | 1.2 | Reviews state the primary marketed capability fails |
+| **Snake Oil** | 1.2 | Health/psych claim + no clinical data + medical-device disclaimer |
+| **False Pain Point** | 1.2 | The "problem" it solves does not exist for the target user |
+| **Privacy Tension** | 1.5 | Claims local/no-cloud but needs continuous cloud for core features |
+| **Inconsistent Claims** | 1.5 | Official sources contradict each other |
+| **Broken "Never" Promise** | 1.5 | Claims never to listen/store/share data it must transmit to work |
+| **Architectural Implausibility** | 1.5 | On-device AI claim not credible for the disclosed form factor |
+| **Severe Side Effects** | 2.1 | Documented new hazards (overheating, security holes, data loss) |
+| **Workflow Sabotage** | 2.1 | Adds massive friction to a previously simple task |
+| **Price vs. Doubt** | 3.2 | Price ≥ $200 AND core capability unreliable or unverified |
+| **Promise vs. Delivery** | 3.2 | Users explicitly mock the hype-vs-reality gap |
+| **Subscription Trap / Brick** | 3.3 | Hardware stops working if the subscription lapses |
+| **App Redundancy** | 4.1 | A free smartphone app does the same thing with less friction |
+| **Delusional Raison d'être** | 4.2 | Unverified premise + 0% adoption or universal panning |
 
 When a trigger fires:
 

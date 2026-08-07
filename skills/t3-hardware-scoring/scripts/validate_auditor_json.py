@@ -48,10 +48,45 @@ ROLES: Dict[str, Dict[str, Any]] = {
     "trash": {"items": TRASH_ITEMS, "max": 42, "auditor": "Trash"},
 }
 
-# Items where an Eagle Eye pattern can fire (trash-red-flags.md).
-EAGLE_EYE_ITEMS = {"1.2", "1.5", "2.1", "3.2", "3.3", "4.1", "4.2"}
+# The canonical Eagle Eye trigger set, mirrored from the "Canonical Trigger
+# Index" table in references/trash-red-flags.md. tests/test_trigger_consistency.py
+# fails if this map and that table disagree.
+EAGLE_EYE_PATTERNS = {
+    "Core Flaw": "1.2",
+    "Snake Oil": "1.2",
+    "False Pain Point": "1.2",
+    "Privacy Tension": "1.5",
+    "Inconsistent Claims": "1.5",
+    'Broken "Never" Promise': "1.5",
+    "Architectural Implausibility": "1.5",
+    "Severe Side Effects": "2.1",
+    "Workflow Sabotage": "2.1",
+    "Price vs. Doubt": "3.2",
+    "Promise vs. Delivery": "3.2",
+    "Subscription Trap / Brick": "3.3",
+    "App Redundancy": "4.1",
+    "Delusional Raison d'être": "4.2",
+}
+
+# Items where an Eagle Eye pattern can fire.
+EAGLE_EYE_ITEMS = set(EAGLE_EYE_PATTERNS.values())
 
 TRIGGER_PREFIX = re.compile(r"^\s*Triggered:", re.IGNORECASE)
+
+
+def trigger_pattern(reason: str) -> str:
+    """
+    Extract the canonical pattern name from a `"Triggered: <Pattern>. ..."` reason.
+
+    Splitting on the first period does not work — several pattern names contain
+    one ("Price vs. Doubt"). Match against the known names instead, longest
+    first so "Price vs. Doubt" is not shadowed by a shorter prefix.
+    """
+    body = TRIGGER_PREFIX.sub("", reason).strip()
+    for name in sorted(EAGLE_EYE_PATTERNS, key=len, reverse=True):
+        if body.lower().startswith(name.lower()):
+            return name
+    return ""
 
 # Per SKILL.md Step 3, verbatim_evidence is capped by score to control tokens.
 MAX_QUOTES_BY_SCORE = {0: 0, 1: 1, 2: 2, 3: 2}
@@ -214,7 +249,16 @@ def validate(doc: Dict[str, Any], role: str, label: str) -> Report:
             if score != 3:
                 rep.error(f"item {item_id}: reason declares an Eagle Eye trigger "
                           f"but score is {score} (a trigger forces 3)")
-            if item_id not in EAGLE_EYE_ITEMS:
+
+            pattern = trigger_pattern(reason)
+            if not pattern:
+                rep.warn(f"item {item_id}: reason does not name a canonical Eagle Eye "
+                         "pattern — use \"Triggered: <Pattern>.\" exactly as spelled "
+                         "in trash-red-flags.md")
+            elif EAGLE_EYE_PATTERNS[pattern] != item_id:
+                rep.error(f"item {item_id}: pattern {pattern!r} belongs to item "
+                          f"{EAGLE_EYE_PATTERNS[pattern]}, not {item_id}")
+            elif item_id not in EAGLE_EYE_ITEMS:
                 rep.warn(f"item {item_id}: Eagle Eye trigger on an item with no "
                          "documented pattern in trash-red-flags.md")
 

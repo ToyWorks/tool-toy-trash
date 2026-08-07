@@ -108,7 +108,7 @@
           ],
           "score": 3,
           "max_score": 3,
-          "reason": "Triggered: Subscription Trap. Unpaid unit is a brick."
+          "reason": "Triggered: Subscription Trap / Brick. Dead if unpaid."
         }
       }
     },
@@ -138,7 +138,7 @@
     "Triggered: Core Flaw. Transcription garbles ~1/3 of multi-speaker audio.",
     "Triggered: Privacy Tension. Claims all-on-device but stops working when the phone is offline.",
     "Triggered: Price vs. Doubt. $329 plus $19/month with unconfirmed core accuracy.",
-    "Triggered: Subscription Trap. Hardware stops transcribing if the plan lapses.",
+    "Triggered: Subscription Trap / Brick. Hardware stops transcribing if the plan lapses.",
     "Triggered: App Redundancy. A free phone voice-memo app delivers the same output."
   ],
   "strengths": [
