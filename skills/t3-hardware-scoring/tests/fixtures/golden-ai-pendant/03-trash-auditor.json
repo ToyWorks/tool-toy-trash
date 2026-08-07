@@ -1,0 +1,185 @@
+{
+  "auditor": "Trash",
+  "auditor_type": "Trash Auditor",
+  "timestamp": "2026-01-01T00:00:00Z",
+  "information_source": "Brand-Blinded product information (original brand information isolated)",
+  "information_isolation_confirmed": true,
+  "scoring_basis": "Dieter Rams Checklist & Eagle Eye Triggers (0-3 Scale)",
+  "checklist_compliance_confirmed": true,
+  "checklist_items": {
+    "1. Principle Violation": {
+      "total": 12,
+      "items": {
+        "1.1": {
+          "verbatim_evidence": ["essentially the same pitch as the wave of clip-on recorders that came before it"],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Reviewers call it a repeat of prior recorders."
+        },
+        "1.2": {
+          "verbatim_evidence": [
+            "the transcription — the entire point of the device — garbled roughly a third of what was said"
+          ],
+          "score": 3,
+          "max_score": 3,
+          "reason": "Triggered: Core Flaw. Primary feature fails in groups."
+        },
+        "1.3": {
+          "verbatim_evidence": ["a bit anonymous-looking for something you wear on your chest all day"],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Vague aesthetic complaint, single reviewer."
+        },
+        "1.4": {
+          "verbatim_evidence": [
+            "needed to retry pairing before the app recognised the pendant"
+          ],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Documented repeat-pairing failures during setup."
+        },
+        "1.5": {
+          "verbatim_evidence": [
+            "All processing happens on the device — your conversations never leave your possession.",
+            "pulling the phone into airplane mode stopped summaries from ever appearing"
+          ],
+          "score": 3,
+          "max_score": 3,
+          "reason": "Triggered: Privacy Tension. Claims local, needs phone."
+        },
+        "1.6": {
+          "verbatim_evidence": [
+            "after about four months the clasp loosens enough that it slides off a collar on its own"
+          ],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Specific mechanical degradation at ~4 months."
+        }
+      }
+    },
+    "2. Problem Creation": {
+      "total": 5,
+      "items": {
+        "2.1": {
+          "verbatim_evidence": [
+            "you have to open the companion app and leave it in the foreground before every session"
+          ],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Adds a mandatory app step before every use."
+        },
+        "2.2": {
+          "verbatim_evidence": ["it needs charging every single night"],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Nightly charging on a forget-about-it device."
+        },
+        "2.3": {
+          "verbatim_evidence": [
+            "a second screen and a second radio strapped to a problem that a microphone already solved"
+          ],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Described as over-engineered by one reviewer."
+        }
+      }
+    },
+    "3. Value Deficit": {
+      "total": 8,
+      "items": {
+        "3.1": {
+          "verbatim_evidence": ["most buyers already own two other devices that capture audio just as well"],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Overlaps hardware buyers already own."
+        },
+        "3.2": {
+          "verbatim_evidence": [
+            "Retail price is $329",
+            "at $329 plus a subscription, you are paying flagship money for a feature whose accuracy nobody has been able to confirm"
+          ],
+          "score": 3,
+          "max_score": 3,
+          "reason": "Triggered: Price vs. Doubt. $329, accuracy unproven."
+        },
+        "3.3": {
+          "verbatim_evidence": [
+            "if you stop paying the monthly plan, the pendant stops transcribing entirely and becomes an inert clip"
+          ],
+          "score": 3,
+          "max_score": 3,
+          "reason": "Triggered: Subscription Trap. Unpaid unit is a brick."
+        }
+      }
+    },
+    "4. Replaceability": {
+      "total": 5,
+      "items": {
+        "4.1": {
+          "verbatim_evidence": [
+            "the free voice memo app already on your phone does the same recording and the same summary, immediately, for nothing"
+          ],
+          "score": 3,
+          "max_score": 3,
+          "reason": "Triggered: App Redundancy. Free phone app matches it."
+        },
+        "4.2": {
+          "verbatim_evidence": [
+            "the audience for always-on personal recording remains a narrow slice of knowledge workers rather than a general market"
+          ],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Serves a narrow niche, not a general need."
+        }
+      }
+    }
+  },
+  "critical_issues": [
+    "Triggered: Core Flaw. Transcription garbles ~1/3 of multi-speaker audio.",
+    "Triggered: Privacy Tension. Claims all-on-device but stops working when the phone is offline.",
+    "Triggered: Price vs. Doubt. $329 plus $19/month with unconfirmed core accuracy.",
+    "Triggered: Subscription Trap. Hardware stops transcribing if the plan lapses.",
+    "Triggered: App Redundancy. A free phone voice-memo app delivers the same output."
+  ],
+  "strengths": [
+    "Light 18 g machined aluminium housing"
+  ],
+  "cross_category_evidence": {
+    "supports_tool": [],
+    "supports_toy": [
+      "Anodized in four colourways",
+      "a satisfying click you'll fidget with"
+    ]
+  },
+  "litmus_gate": "Yes",
+  "litmus_test_result": {
+    "test": "Does the data explicitly show the product causes more friction, expense, or privacy risk than the traditional alternative?",
+    "answer": "Yes",
+    "reason": "A free phone app produces the same summary immediately, while the pendant adds a foreground-app step, nightly charging and a $19/month plan.",
+    "confidence": "High"
+  },
+  "extract_for_report": {
+    "litmus_test_answer": "Yes",
+    "litmus_test_reason": "A free phone app produces the same summary immediately, while the pendant adds friction and a subscription",
+    "strengths_bullets": ["Light 18 g machined aluminium housing; S2"],
+    "weaknesses_bullets": [
+      "Transcription garbles ~1/3 of group speech; S3",
+      "On-device claim contradicted by airplane-mode test; S3",
+      "Becomes an inert clip if the plan lapses; S3"
+    ],
+    "key_evidence": [
+      "Item 1.2: transcription garbled roughly a third of what was said; S3",
+      "Item 1.5: airplane mode stopped summaries from ever appearing; S3",
+      "Item 4.1: free voice memo app does the same, for nothing; S3"
+    ],
+    "critical_issues": [
+      "Core Flaw: primary transcription feature is unreliable.",
+      "Privacy Tension: on-device claim contradicted by observed behaviour.",
+      "Price vs. Doubt: $329 plus subscription for an unverified core capability.",
+      "Subscription Trap: hardware bricks without the monthly plan.",
+      "App Redundancy: a free smartphone app matches the output."
+    ]
+  },
+  "total_score": 30,
+  "max_possible_score": 42
+}

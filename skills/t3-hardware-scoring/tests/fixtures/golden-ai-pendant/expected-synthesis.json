@@ -1,0 +1,32 @@
+{
+  "_comment": "Expected output of synthesize_results.py for the golden-ai-pendant fixture. Hand-derived from t3-classification.md, not copied from a script run.",
+  "scores": {
+    "tool_raw": 11,
+    "tool_normalized": 33.3,
+    "toy_raw": 9,
+    "toy_normalized": 27.3,
+    "trash_raw": 30,
+    "trash_normalized": 71.4,
+    "composite": -38.1
+  },
+  "litmus_gates": {
+    "tool": "No",
+    "toy": "Yes",
+    "trash": "Yes"
+  },
+  "classification": {
+    "primary": "Trash",
+    "secondary": [],
+    "final_label": "Trash",
+    "display_label": "Trash (Eagle Eye)",
+    "eagle_eye_veto_activated": true,
+    "confidence": "Review Required",
+    "gray_zone": false,
+    "condition_counts": {
+      "tool": 0,
+      "toy": 1,
+      "trash": 4
+    }
+  },
+  "eagle_eye_trigger_count": 5
+}

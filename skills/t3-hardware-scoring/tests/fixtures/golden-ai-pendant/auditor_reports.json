@@ -1,0 +1,77 @@
+{
+  "tool": {
+    "total_score": 11,
+    "litmus_gate": "No",
+    "extract_for_report": {
+      "litmus_test_answer": "No",
+      "litmus_test_reason": "No task time, error rate, or workflow-replacement metric appears anywhere in the text",
+      "strengths_bullets": [
+        "Screenless single-button interaction; S2",
+        "18 g, light enough for all-day wear; S2"
+      ],
+      "weaknesses_bullets": [
+        "No efficiency metric of any kind; S1",
+        "Reliability rests on marketing adjectives; S1"
+      ],
+      "key_evidence": [
+        "Item 3.3: No display, single RGB status LED; S2",
+        "Item 4.2: tested extensively before shipping; S1"
+      ]
+    }
+  },
+  "toy": {
+    "total_score": 9,
+    "litmus_gate": "Yes",
+    "extract_for_report": {
+      "litmus_test_answer": "Yes",
+      "litmus_test_reason": "The clasp is sold as a fidget-worthy tactile detail, a purely non-functional sensory feature",
+      "strengths_bullets": [
+        "Bead-blasted machined aluminium in four colourways; S2",
+        "Clasp designed as a deliberate tactile moment; S2"
+      ],
+      "weaknesses_bullets": [
+        "No easter eggs or discovery surface; S1",
+        "One button leaves nothing to master; S1"
+      ],
+      "key_evidence": [
+        "Item 1.1: machined 6063 aluminium with a bead-blasted finish; S2",
+        "Item 1.3: a satisfying click you'll fidget with; S2"
+      ]
+    }
+  },
+  "trash": {
+    "total_score": 30,
+    "litmus_gate": "Yes",
+    "extract_for_report": {
+      "litmus_test_answer": "Yes",
+      "litmus_test_reason": "A free phone app produces the same summary immediately, while the pendant adds friction and a subscription",
+      "strengths_bullets": [
+        "Light 18 g machined aluminium housing; S2"
+      ],
+      "weaknesses_bullets": [
+        "Transcription garbles ~1/3 of group speech; S3",
+        "On-device claim contradicted by airplane-mode test; S3",
+        "Becomes an inert clip if the plan lapses; S3"
+      ],
+      "key_evidence": [
+        "Item 1.2: transcription garbled roughly a third of what was said; S3",
+        "Item 1.5: airplane mode stopped summaries from ever appearing; S3",
+        "Item 4.1: free voice memo app does the same, for nothing; S3"
+      ],
+      "critical_issues": [
+        "Core Flaw: primary transcription feature is unreliable.",
+        "Privacy Tension: on-device claim contradicted by observed behaviour.",
+        "Price vs. Doubt: $329 plus subscription for an unverified core capability.",
+        "Subscription Trap: hardware bricks without the monthly plan.",
+        "App Redundancy: a free smartphone app matches the output."
+      ]
+    },
+    "critical_issues": [
+      "Triggered: Core Flaw. Transcription garbles ~1/3 of multi-speaker audio.",
+      "Triggered: Privacy Tension. Claims all-on-device but stops working when the phone is offline.",
+      "Triggered: Price vs. Doubt. $329 plus $19/month with unconfirmed core accuracy.",
+      "Triggered: Subscription Trap. Hardware stops transcribing if the plan lapses.",
+      "Triggered: App Redundancy. A free phone voice-memo app delivers the same output."
+    ]
+  }
+}

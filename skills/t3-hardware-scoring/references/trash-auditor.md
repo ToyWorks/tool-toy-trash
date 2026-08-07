@@ -199,7 +199,7 @@ During scoring, if a condition below is met based on the text, the corresponding
 
 ### 🚨 Strict Output Template (Mandatory)
 
-**Must** follow `trash-auditor-template.md` for the scoring table format.
+**Must** follow [`trash-auditor-template.md`](trash-auditor-template.md) for the scoring table format.
 
 **Mandatory requirements**:
 
@@ -291,6 +291,7 @@ Table first, then JSON output; both must be consistent.
     "supports_toy": []
   },
 
+  "litmus_gate": "Yes",
   "litmus_test_result": {
     "test": "Does the data explicitly show the product causes more friction than the traditional alternative?",
     "answer": "Yes",
@@ -323,6 +324,22 @@ Table first, then JSON output; both must be consistent.
 3. **Evidence-First Scoring**: The AI must extract quotes (`verbatim_evidence`) to justify every single score.
 4. **Eagle Eye Enforcement**: If an Eagle Eye trigger is met, it MUST be noted in the `reason` and score an automatic 3.
 5. **Litmus Test result**: Must evaluate the strict logic gate based purely on data.
+6. **Top-level `litmus_gate`**: Required, and must match `litmus_test_result.answer`.
+   `synthesize_results.py` reads this exact field; a missing gate is one of only
+   four primary-classification conditions silently lost.
+7. **`critical_issues` correspondence**: exactly one entry per `"Triggered:"` item.
+   That array is the sole input to the Eagle Eye Veto — a trigger scored but not
+   recorded there has no effect on the verdict.
+
+### Self-check before returning
+
+```bash
+python3 scripts/validate_auditor_json.py validate --role trash 03-trash-auditor.json
+```
+
+Checks the arithmetic, item coverage, the evidence-first rule, and the
+trigger/`critical_issues` correspondence. A complete passing report is in
+[`../tests/fixtures/golden-ai-pendant/03-trash-auditor.json`](../tests/fixtures/golden-ai-pendant/03-trash-auditor.json).
 
 ## Workflow
 

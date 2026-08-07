@@ -125,19 +125,25 @@ Using the **Normalized Scores (0-100)**, execute the following logic:
 
 This is a valid and common outcome for products that are genuinely ambiguous. Do not force a classification.
 
-**Gray Zone Resolution Rules (execute in order):**
+**Gray Zone Resolution Rules (execute in order — the first rule that applies wins):**
 
-1. **Composite Score tiebreaker**:
-   - Composite > 0 → Provisional Primary = Tool (if NormTool ≥ NormToy) or Toy (if NormToy > NormTool)
-   - Composite < 0 → Provisional Primary = Trash
-   - Composite = 0 → Provisional Primary = whichever of Tool/Toy is higher; if equal, Tool wins
+1. **Litmus Gate override**: If **exactly one** category passes its Litmus Gate, that
+   category becomes Primary. In the Gray Zone no category has enough score evidence to
+   stand on, so a single passing gate is the only positive signal available — it
+   outranks the composite tiebreaker below.
+   If zero or two-plus gates pass, fall through to rule 2.
 
-2. **Litmus Gate override**: If only one category passes its Litmus Gate, that category becomes Primary — even in Gray Zone.
+2. **Composite Score tiebreaker**:
+   - Composite > 0 → Primary = Tool (if NormTool ≥ NormToy) or Toy (if NormToy > NormTool)
+   - Composite < 0 → Primary = Trash
+   - Composite = 0 → whichever of Tool/Toy is higher; if equal, Tool wins
 
-3. **Label suffix**: Append `(Gray Zone)` to the final label to signal low confidence.
-   Example: `Toy + Trash (Gray Zone)`
+3. **Gray Zone secondary rule**: If the Composite is **negative**, "Trash" is always
+   added as a Secondary — a negative composite means Trash outweighs the winner, even
+   when NormTrash sits below the usual 50 threshold from Step 2.
 
-4. **Confidence**: Always set to `"Low"` in Gray Zone, regardless of score spread.
+4. **Confidence**: Always `"Low"` in Gray Zone, regardless of score spread
+   (unless an Eagle Eye Veto fires, which forces `"Review Required"`).
 
 5. **Verdict note**: The Final Verdict Summary must explicitly state the product is in a Gray Zone and explain which dimension pulled the classification.
 
@@ -148,12 +154,33 @@ NormToy  = 36.4  (conditions met: 1 — Toy Litmus Gate Yes)
 NormTrash = 47.6 (conditions met: 0)
 Composite = -11.2
 
-→ No category has 2+ conditions.
-→ Composite < 0 → provisional Trash; but Toy Litmus Gate passed.
-→ Litmus Gate override: Toy becomes Primary.
-→ Secondary: Trash (NormTrash 47.6 ≥ 50 threshold not met, but composite negative → include).
-→ Final label: "Toy + Trash (Gray Zone)" | Confidence: Low
+→ No category has 2+ conditions → Gray Zone.
+→ Rule 1: exactly one gate passed (Toy) → Toy becomes Primary.
+   (Rule 2 alone would have said Trash, on the negative composite.)
+→ Rule 3: composite is negative → Trash is added as Secondary,
+   even though NormTrash 47.6 misses the usual 50 threshold.
+→ final_label: "Toy + Trash"  |  display_label: "Toy + Trash (Gray Zone)"
+→ Confidence: Low
 ```
+
+This example is pinned as a test in
+[`../tests/test_synthesize.py`](../tests/test_synthesize.py) (`test_gray_zone_example`).
+
+---
+
+## Label Fields
+
+Two labels are emitted, and they are not interchangeable:
+
+| Field | Contents | Use for |
+| --- | --- | --- |
+| `final_label` | `Primary + Secondary` only, e.g. `Tool + Trash` | Leaderboards, YAML metadata, grouping, any parsing |
+| `display_label` | `final_label` plus annotations, e.g. `Tool + Trash (Eagle Eye, Gray Zone)` | Reports, chat output, anything a human reads |
+
+Keeping annotations out of `final_label` means a Gray Zone `Tool` and a confident
+`Tool` still group together on the leaderboard, while the report still shows the
+caveat. When both conditions hold, `display_label` names both — the older
+single-suffix format dropped `(Gray Zone)` whenever Eagle Eye also fired.
 
 ---
 
@@ -210,7 +237,8 @@ The Final Judge output must synthesize the normalized math, the logic gates, and
     "classification": {
       "primary": "Tool",
       "secondary": ["Trash"],
-      "final_label": "Tool + Trash"
+      "final_label": "Tool + Trash",
+      "display_label": "Tool + Trash (Eagle Eye)"
     },
     
     "decision_reasoning": {
@@ -233,3 +261,17 @@ The Final Judge output must synthesize the normalized math, the logic gates, and
 2. **Mathematical Transparency**: Show the raw to normalized conversion.
 3. **Veto Enforcement**: The JSON must explicitly declare `eagle_eye_veto_activated` (true/false) based on the presence of `critical_issues` from the Trash Auditor.
 4. **Final Verdict Summary**: A one-sentence human-readable summary of the product's true nature.
+
+---
+
+## Implementation Note
+
+Every rule on this page is implemented in
+[`../scripts/synthesize_results.py`](../scripts/synthesize_results.py) and pinned by
+[`../tests/test_synthesize.py`](../tests/test_synthesize.py). Run the Final Judge
+through the script rather than by hand — the thresholds interact (four primary
+conditions, two secondary tiers, gate overrides, and the veto), and both worked
+examples on this page previously disagreed with the code.
+
+If you change a rule here, change the test in the same commit. The tests name the
+spec section each case comes from, so the pairing is easy to find.

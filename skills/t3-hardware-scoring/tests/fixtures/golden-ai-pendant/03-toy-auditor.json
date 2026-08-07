@@ -1,0 +1,136 @@
+{
+  "auditor": "Toy",
+  "auditor_type": "Toy Auditor",
+  "timestamp": "2026-01-01T00:00:00Z",
+  "information_source": "Brand-Blinded product information (original brand information isolated)",
+  "information_isolation_confirmed": true,
+  "scoring_basis": "Don Norman Design Psychology checklist (0-3 Deterministic Scale)",
+  "checklist_compliance_confirmed": true,
+  "checklist_items": {
+    "1. Sensory Pleasure": {
+      "total": 6,
+      "items": {
+        "1.1": {
+          "verbatim_evidence": ["machined 6063 aluminium with a bead-blasted finish"],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Specific CMF, no user reaction data."
+        },
+        "1.2": {
+          "verbatim_evidence": ["Anodized in four colourways"],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Named finish process and colour range."
+        },
+        "1.3": {
+          "verbatim_evidence": ["a satisfying click you'll fidget with"],
+          "score": 2,
+          "max_score": 3,
+          "reason": "Specific tactile detail on the clasp."
+        }
+      }
+    },
+    "2. Surprise and Discovery": {
+      "total": 0,
+      "items": {
+        "2.1": {
+          "verbatim_evidence": [],
+          "score": 0,
+          "max_score": 3,
+          "reason": "Nothing described as exceeding expectations."
+        },
+        "2.2": {
+          "verbatim_evidence": [],
+          "score": 0,
+          "max_score": 3,
+          "reason": "No exploration surface; one button."
+        },
+        "2.3": {
+          "verbatim_evidence": [],
+          "score": 0,
+          "max_score": 3,
+          "reason": "No easter eggs or hidden details."
+        }
+      }
+    },
+    "3. Emotional Connection": {
+      "total": 3,
+      "items": {
+        "3.1": {
+          "verbatim_evidence": [
+            "an effortless second memory for people who are tired of taking notes"
+          ],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Relief framing only, no user sentiment."
+        },
+        "3.2": {
+          "verbatim_evidence": ["a satisfying click you'll fidget with"],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Fidget appeal claimed by vendor only."
+        },
+        "3.3": {
+          "verbatim_evidence": ["Anodized in four colourways"],
+          "score": 1,
+          "max_score": 3,
+          "reason": "Colour choice is the only personalization."
+        }
+      }
+    },
+    "4. Explorability": {
+      "total": 0,
+      "items": {
+        "4.1": {
+          "verbatim_evidence": [],
+          "score": 0,
+          "max_score": 3,
+          "reason": "One button, one job: no depth to master."
+        },
+        "4.2": {
+          "verbatim_evidence": [],
+          "score": 0,
+          "max_score": 3,
+          "reason": "No modding, scripting, or experimentation."
+        }
+      }
+    }
+  },
+  "strengths": [
+    "Machined aluminium housing in four anodized colourways",
+    "Clasp designed as a deliberate tactile moment"
+  ],
+  "weaknesses": [
+    "No surprise, easter eggs, or discovery of any kind",
+    "Single-button design leaves nothing to explore"
+  ],
+  "cross_category_evidence": {
+    "supports_tool": ["No display. A single RGB status LED indicates recording state."],
+    "supports_trash": ["a bit anonymous-looking for something you wear on your chest all day"]
+  },
+  "litmus_gate": "Yes",
+  "litmus_test_result": {
+    "test": "Does the data explicitly mention features designed for aesthetic display, deep personalization, or non-functional sensory delight?",
+    "answer": "Yes",
+    "reason": "The clasp is described as a satisfying click to fidget with — a purely non-functional sensory feature — alongside four anodized colourways.",
+    "confidence": "Medium"
+  },
+  "extract_for_report": {
+    "litmus_test_answer": "Yes",
+    "litmus_test_reason": "The clasp is sold as a fidget-worthy tactile detail, a purely non-functional sensory feature",
+    "strengths_bullets": [
+      "Bead-blasted machined aluminium in four colourways; S2",
+      "Clasp designed as a deliberate tactile moment; S2"
+    ],
+    "weaknesses_bullets": [
+      "No easter eggs or discovery surface; S1",
+      "One button leaves nothing to master; S1"
+    ],
+    "key_evidence": [
+      "Item 1.1: machined 6063 aluminium with a bead-blasted finish; S2",
+      "Item 1.3: a satisfying click you'll fidget with; S2"
+    ]
+  },
+  "total_score": 9,
+  "max_possible_score": 33
+}
