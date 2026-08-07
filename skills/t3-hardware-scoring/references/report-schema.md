@@ -45,9 +45,16 @@ Enables leaderboard parsing of `99-audit-report.md` YAML metadata. Field names a
 | --- | --- | --- |
 | `primary` | string | `Tool` |
 | `secondary` | array of string | e.g. `["Toy", "Trash"]` |
-| `final_label` | string | e.g. `Tool + Trash` |
+| `final_label` | string | `Primary + Secondary` only, e.g. `Tool + Trash`. **Never carries annotations** — this is the field leaderboards group on |
+| `display_label` | string | `final_label` plus annotations, e.g. `Tool + Trash (Eagle Eye, Gray Zone)`. Use in prose, never for parsing |
 | `eagle_eye_veto_activated` | boolean | `true` if Trash Auditor flagged a critical issue overriding the math |
-| `confidence` | string | `High` |
+| `gray_zone` | boolean | `true` if no category met 2+ primary conditions |
+| `confidence` | string | `High` \| `Medium` \| `Low` \| `Review Required` |
+
+*Both label fields come straight from `synthesize_results.py`. Keeping the
+annotations out of `final_label` means a Gray Zone `Tool` and a confident `Tool`
+still group together on a leaderboard, while the report still shows the caveat —
+see [t3-classification.md](t3-classification.md#label-fields).*
 
 ### scores
 
@@ -110,6 +117,11 @@ Fixed section headers; content mapped from the JSON `extract_for_report` and Fin
 * [ ] YAML block starts and ends with `---`
 * [ ] `case_id`, `source_url`, `audit_date`, `classification`, `scores`, `chart_data`, `litmus_gates` exist.
 * [ ] `classification.eagle_eye_veto_activated` is explicitly set to `true` or `false`.
+* [ ] `classification.final_label` contains no parenthesised annotation.
 * [ ] `scores.*_normalized` are 0–100 numbers (converted from raw 33/42).
 * [ ] `litmus_gates` only contain `Yes` or `No`.
-* [ ] `chart_data.*.dimensions` keys match the fixed lists above and do not exceed their new raw maximums (9 or 6).
+* [ ] `chart_data.*.dimensions` keys match the fixed lists above and do not exceed their raw maximums (18, 9 or 6).
+
+*Do not hand-copy these values.* Take `scores`, `litmus_gates` and
+`classification` verbatim from the `synthesize_results.py` output — it emits
+every field above under exactly these names.

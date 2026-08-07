@@ -96,7 +96,7 @@ If the product meets ALL of the following, append `(Pre-launch)` to the case_id 
 
 ### Step 2: Organize + Brand Blind (combined step)
 - Read [references/organize-guide.md](references/organize-guide.md)
-- Read [references/defluff-guide.md](references/defluff-guide.md)
+- Read [references/brand-blinding-guide.md](references/brand-blinding-guide.md)
 - Merge all sources into one structured document
 - Apply Brand Blinding inline (replace brand names with [BRAND], [PRODUCT], [FEATURE])
 - **Preserve ALL adjectives and marketing claims verbatim** — needed by downstream auditors
@@ -335,6 +335,15 @@ in `validate_auditor_json.py` — drifts.
 read actually exists — a dead reference mid-run means the agent improvises the
 rubric.
 
+| Test file | Covers |
+|---|---|
+| `test_synthesize.py` | Final Judge math: thresholds, Gray Zone, the veto, strict input |
+| `test_validate.py` | Every rejection the Step 3.5 validator has to make |
+| `test_golden_case.py` | Steps 3 → 5 end to end over the fixture |
+| `test_trigger_consistency.py` | The Eagle Eye trigger set across four files and the code |
+| `test_repo_consistency.py` | Frontmatter, versions, templates, marketplace, report schema |
+| `test_cli.py` | Exit codes — the signal the skill's shell steps actually read |
+
 ---
 
 ## Resource Index
@@ -347,7 +356,7 @@ rubric.
 | File | Used In |
 |------|---------|
 | [organize-guide.md](references/organize-guide.md) | Step 2 |
-| [defluff-guide.md](references/defluff-guide.md) | Step 2 |
+| [brand-blinding-guide.md](references/brand-blinding-guide.md) | Step 2 |
 | [tool-auditor.md](references/tool-auditor.md) | Step 3 |
 | [tool-auditor-template.md](references/tool-auditor-template.md) | Step 3 |
 | [toy-auditor.md](references/toy-auditor.md) | Step 3 |

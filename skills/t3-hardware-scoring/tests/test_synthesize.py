@@ -272,6 +272,33 @@ class TestEagleEyeVeto(unittest.TestCase):
         data["trash"]["extract_for_report"] = {"critical_issues": ["Triggered: Core Flaw."]}
         self.assertTrue(synthesize_results(data)["classification"]["eagle_eye_veto_activated"])
 
+    def test_empty_top_level_does_not_mask_a_populated_nested_list(self):
+        """
+        This is a safety veto: where the two locations disagree, fire it. An
+        empty top-level array used to shadow a populated nested one, silently
+        turning a vetoed product back into a clean Tool.
+        """
+        data = reports(30, "Yes", 5, "No", 4, "No", issues=[])
+        data["trash"]["extract_for_report"] = {"critical_issues": ["Triggered: Core Flaw."]}
+        c = synthesize_results(data)["classification"]
+        self.assertTrue(c["eagle_eye_veto_activated"])
+        self.assertEqual(c["final_label"], "Tool + Trash")
+
+    def test_top_level_wins_when_both_are_populated(self):
+        data = reports(30, "Yes", 5, "No", 4, "No", issues=["Triggered: App Redundancy."])
+        data["trash"]["extract_for_report"] = {
+            "critical_issues": ["Triggered: Core Flaw.", "Triggered: Snake Oil."]
+        }
+        self.assertEqual(
+            synthesize_results(data)["classification"]["eagle_eye_triggers"],
+            ["Triggered: App Redundancy."],
+        )
+
+    def test_both_empty_means_no_veto(self):
+        data = reports(30, "Yes", 5, "No", 4, "No", issues=[])
+        data["trash"]["extract_for_report"] = {"critical_issues": []}
+        self.assertFalse(synthesize_results(data)["classification"]["eagle_eye_veto_activated"])
+
     def test_empty_string_triggers_do_not_fire_the_veto(self):
         result = synthesize_results(reports(30, "Yes", 5, "No", 4, "No", issues=["", "   "]))
         self.assertFalse(result["classification"]["eagle_eye_veto_activated"])

@@ -212,6 +212,19 @@ class TestCodeMatchesDocs(unittest.TestCase):
     def test_unknown_pattern_name_yields_nothing(self):
         self.assertEqual(trigger_pattern("Triggered: Vibes Are Off. Just a feeling."), "")
 
+    def test_no_pattern_name_is_a_prefix_of_another(self):
+        """
+        trigger_pattern() matches longest-first so a future name cannot be
+        shadowed by a shorter one. Today no name is a prefix of another, which
+        is what keeps that ordering merely defensive — assert it stays that way,
+        because a collision would make the parse order load-bearing and silent.
+        """
+        collisions = [(a, b) for a in EAGLE_EYE_PATTERNS for b in EAGLE_EYE_PATTERNS
+                      if a != b and b.lower().startswith(a.lower())]
+        self.assertEqual(collisions, [],
+                         "one pattern name prefixes another; trigger_pattern() would "
+                         "depend on match order")
+
 
 class TestGoldenFixtureUsesRealPatterns(unittest.TestCase):
     """A fixture citing an invented pattern name would teach the wrong vocabulary."""

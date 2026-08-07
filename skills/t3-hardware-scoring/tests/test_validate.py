@@ -184,9 +184,34 @@ class TestEagleEyeBookkeeping(unittest.TestCase):
 
     def test_trigger_missing_from_critical_issues_is_caught(self):
         doc = load("trash")
-        doc["critical_issues"].pop()  # 5 triggered items, 4 recorded
+        # Drop from BOTH copies, so this can only be caught by the
+        # trigger-count check and not incidentally by the top-vs-nested check.
+        doc["critical_issues"].pop()
+        doc["extract_for_report"]["critical_issues"].pop()
         errs = errors_for(doc, "trash")
-        self.assertTrue(any("critical_issues has 4 entries" in e for e in errs), errs)
+        self.assertTrue(any("4 entries but" in e and "Triggered:" in e for e in errs), errs)
+
+    def test_pattern_scored_on_the_wrong_item_is_caught(self):
+        """
+        App Redundancy belongs to 4.1. Firing it on 4.2 would still be a 3 with
+        a "Triggered:" reason, so only a name-to-item check catches it.
+        """
+        doc = load("trash")
+        item = find_item(doc, "4.2")
+        item["score"] = 3
+        item["reason"] = "Triggered: App Redundancy. Free app does it better."
+        item["verbatim_evidence"] = ["a free smartphone app does the same"]
+        doc["critical_issues"].append("Triggered: App Redundancy. Duplicate.")
+        doc["extract_for_report"]["critical_issues"].append("App Redundancy: duplicate.")
+        errs = errors_for(doc, "trash")
+        self.assertTrue(any("belongs to item 4.1, not 4.2" in e for e in errs), errs)
+
+    def test_invented_pattern_name_is_flagged(self):
+        doc = load("trash")
+        find_item(doc, "1.5")["reason"] = "Triggered: Bad Vibes. Feels wrong."
+        rep = validate(doc, "trash", "test")
+        self.assertTrue(any("canonical Eagle Eye pattern" in w for w in rep.warnings),
+                        rep.warnings)
 
     def test_all_triggers_dropped_is_caught(self):
         doc = load("trash")
@@ -216,10 +241,33 @@ class TestEagleEyeBookkeeping(unittest.TestCase):
             section["total"] = 0
         doc["total_score"] = 0
         doc["critical_issues"] = []
+        doc["extract_for_report"]["critical_issues"] = []
         doc["litmus_gate"] = "No"
         doc["litmus_test_result"]["answer"] = "No"
         doc["extract_for_report"]["litmus_test_answer"] = "No"
         self.assertEqual(errors_for(doc, "trash"), [])
+
+    def test_top_level_and_nested_critical_issues_must_agree(self):
+        """
+        The synthesizer falls back to the nested copy when the top-level array
+        is empty, so a disagreement decides whether the veto fires.
+        """
+        doc = load("trash")
+        doc["extract_for_report"]["critical_issues"] = doc["critical_issues"][:2]
+        errs = errors_for(doc, "trash")
+        self.assertTrue(any("extract_for_report.critical_issues has 2" in e for e in errs), errs)
+
+
+class TestDuplicateItems(unittest.TestCase):
+    """An ID in two sections would collapse silently, hiding one set of evidence."""
+
+    def test_duplicate_item_id_across_sections_is_caught(self):
+        doc = load("trash")
+        doc["checklist_items"]["2. Problem Creation"]["items"]["1.1"] = {
+            "verbatim_evidence": [], "score": 0, "max_score": 3, "reason": "dupe",
+        }
+        errs = errors_for(doc, "trash")
+        self.assertTrue(any("more than one section" in e for e in errs), errs)
 
 
 class TestMerge(unittest.TestCase):

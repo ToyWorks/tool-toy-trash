@@ -126,18 +126,23 @@ class Report:
 
 # ─── Field access helpers ─────────────────────────────────────────────────────
 
-def _iter_items(doc: Dict[str, Any]) -> Dict[str, Tuple[str, Dict[str, Any]]]:
+def _iter_items(doc: Dict[str, Any]) -> Tuple[Dict[str, Tuple[str, Dict[str, Any]]], List[str]]:
     """
-    Flatten checklist_items -> {item_id: (section_name, item_dict)}.
+    Flatten checklist_items -> ({item_id: (section_name, item_dict)}, duplicates).
 
     The schema nests items under free-text section names ("1. Pain Point
     Identification and Resolution"), which auditors reword. Key off the item ID
     instead so a reworded section header is a warning, not a hard failure.
+
+    An ID appearing in two sections is reported rather than silently collapsed:
+    only one copy would reach the total, so the arithmetic check would pass
+    against the wrong evidence.
     """
     flat: Dict[str, Tuple[str, Dict[str, Any]]] = {}
+    duplicates: List[str] = []
     sections = doc.get("checklist_items")
     if not isinstance(sections, dict):
-        return flat
+        return flat, duplicates
     for section_name, section in sections.items():
         if not isinstance(section, dict):
             continue
@@ -145,9 +150,14 @@ def _iter_items(doc: Dict[str, Any]) -> Dict[str, Tuple[str, Dict[str, Any]]]:
         if not isinstance(items, dict):
             continue
         for item_id, item in items.items():
-            if isinstance(item, dict):
-                flat[str(item_id).strip()] = (section_name, item)
-    return flat
+            if not isinstance(item, dict):
+                continue
+            key = str(item_id).strip()
+            if key in flat:
+                duplicates.append(key)
+                continue
+            flat[key] = (section_name, item)
+    return flat, duplicates
 
 
 def _parse_gate(value: Any) -> str:
@@ -173,11 +183,15 @@ def validate(doc: Dict[str, Any], role: str, label: str) -> Report:
     max_score = contract["max"]
 
     # ── Structure ────────────────────────────────────────────────────────────
-    flat = _iter_items(doc)
+    flat, duplicates = _iter_items(doc)
     if not flat:
         rep.error("checklist_items is missing, empty, or not the expected "
                   "{section: {items: {id: {...}}}} shape")
         return rep
+
+    if duplicates:
+        rep.error(f"item ID(s) appear in more than one section: "
+                  f"{', '.join(sorted(set(duplicates)))}")
 
     missing = [i for i in expected_ids if i not in flat]
     if missing:
@@ -342,6 +356,14 @@ def validate(doc: Dict[str, Any], role: str, label: str) -> Report:
             if triggered_items and not issues:
                 rep.error("Eagle Eye triggers were scored but critical_issues is empty — "
                           "the veto would not fire")
+
+            # The same list is repeated under extract_for_report. The synthesizer
+            # falls back to that copy when the top-level one is empty, so a
+            # disagreement between them changes whether the veto fires.
+            nested = extract.get("critical_issues") if isinstance(extract, dict) else None
+            if isinstance(nested, list) and len(nested) != len(issues):
+                rep.error(f"critical_issues has {len(issues)} entries but "
+                          f"extract_for_report.critical_issues has {len(nested)}")
 
     # ── Declared identity ────────────────────────────────────────────────────
     auditor = doc.get("auditor")

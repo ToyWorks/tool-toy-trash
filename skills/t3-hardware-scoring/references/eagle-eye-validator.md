@@ -22,7 +22,21 @@ The main agent passes **file paths** (not inline content) to the validator subag
 - `03-trash-auditor.json` (always, since it contains critical_issues)
 
 ## Output
-Print JSON to stdout (main agent writes file):
+Print JSON to stdout (main agent writes the file).
+
+The main agent applies each adjustment **to the `03-*.json` auditor reports**,
+then re-runs the Step 3.5 merge:
+
+```bash
+python3 scripts/validate_auditor_json.py merge \
+  --tool 03-tool-auditor.json --toy 03-toy-auditor.json \
+  --trash 03-trash-auditor.json --output auditor_reports.json
+```
+
+Do not patch `auditor_reports.json` directly. Totals, section subtotals and
+`critical_issues` all have to stay consistent with the item scores, and only
+re-merging keeps them derived rather than hand-edited — the merge step re-checks
+the arithmetic and refuses inconsistent input.
 
 ```json
 {

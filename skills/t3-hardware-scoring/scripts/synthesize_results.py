@@ -106,19 +106,34 @@ def read_gate(report: Dict[str, Any], role: str) -> bool:
         raise InputError(f"'{role}' report: {e}") from None
 
 
+def _clean_issues(raw: Any) -> List[str]:
+    return [str(i) for i in raw if str(i).strip()]
+
+
 def read_critical_issues(trash: Dict[str, Any]) -> List[str]:
-    """Read the Eagle Eye triggers, accepting the top-level or nested location."""
-    issues = trash.get("critical_issues")
-    if issues is None:
-        extract = trash.get("extract_for_report")
-        if isinstance(extract, dict):
-            issues = extract.get("critical_issues")
-    if issues is None:
-        return []
-    if not isinstance(issues, list):
+    """
+    Read the Eagle Eye triggers, accepting the top-level or nested location.
+
+    An absent *or empty* top-level array falls through to
+    extract_for_report.critical_issues. This drives a safety veto, so where the
+    two locations disagree, err toward firing it rather than toward dropping it.
+    validate_auditor_json.py flags the disagreement itself.
+    """
+    top = trash.get("critical_issues")
+    if top is not None and not isinstance(top, list):
         raise InputError(f"'trash' critical_issues must be a list, "
-                         f"got {type(issues).__name__}")
-    return [str(i) for i in issues if str(i).strip()]
+                         f"got {type(top).__name__}")
+
+    issues = _clean_issues(top or [])
+    if issues:
+        return issues
+
+    extract = trash.get("extract_for_report")
+    if isinstance(extract, dict):
+        nested = extract.get("critical_issues")
+        if isinstance(nested, list):
+            return _clean_issues(nested)
+    return []
 
 
 # ─── Classification ───────────────────────────────────────────────────────────

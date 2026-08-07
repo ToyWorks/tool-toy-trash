@@ -32,6 +32,22 @@ npx skills add toyworks/agent-skills --skill t3-hardware-scoring
 npx skills add toyworks/agent-skills --list
 ```
 
+### Claude Code Plugin
+
+Install via Claude Code's plugin system. The marketplace is defined in
+[.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) and is named
+`toyworks-agent-skills`:
+
+```bash
+/plugin marketplace add ToyWorks/agent-skills
+```
+
+```bash
+/plugin install t3-hardware-scoring@toyworks-agent-skills
+```
+
+> Claude Code plugins are also supported in Factory's [Droid](https://docs.factory.ai/cli/configuration/plugins#claude-code-compatibility).
+
 ### Other Installation Methods
 
 Agent skills can also be installed by using the below commands from [Playbooks](https://playbooks.com/skills) or [Context7](https://context7.com/docs/skills):
