@@ -1,96 +1,89 @@
-# ToyWorks Agent Skills
+# Tool, Toy, or Trash?
 
-This repository hosts public agent skills maintained by the ToyWorks Team.
+Every AI gadget is some mix of three things:
 
-## What are Agent Skills?
+| | Earns its place by | You know it when |
+| --- | --- | --- |
+| 🟢 **Tool** | removing a step from someone's day | it breaks and the workflow breaks with it |
+| 🟡 **Toy** | delight: materials, surprise, room to explore and mod | people keep it on the desk with nothing to do |
+| 🔴 **Trash** | nothing: it adds friction, leaks privacy, or duplicates a free phone app | it is in a drawer within a month |
 
-Agent Skills are folders of instructions, scripts, and resources that agents can discover and use to do things more accurately and efficiently. They work across any AI agent that supports the [open Agent Skills standard](https://agentskills.io).
+That question is worth asking *before* building hardware, not after.
+**T3** turns it into an audit an AI agent can run on any product page, as the
+`t3-hardware-scoring` agent skill.
 
-## Available Skills
-<!-- START:Available-Skills -->
-
-| Skill | Description |
-| ----- | ----------- |
-| t3-hardware-scoring | The MantaBase T3 Hardware Audit System classifies a hardware product as Tool, Toy, or Trash. It brand-blinds the source material, scores it with three independent auditors working from fixed rubrics and verbatim evidence, revalidates the high-risk findings with an Eagle Eye pass, and applies a safety veto in the final synthesis. |
-
-<!-- END:Available-Skills -->
-
-## Installation
-
-### Skills
-
-Use [npx skills](https://skills.sh/) to install skills directly:
+## Try it
 
 ```bash
-# Install all skills
-npx skills add toyworks/agent-skills
-
-# Install specific skills
-npx skills add toyworks/agent-skills --skill t3-hardware-scoring
-
-# List available skills
-npx skills add toyworks/agent-skills --list
+npx skills add toyworks/tool-toy-trash
 ```
 
-### Claude Code Plugin
-
-Install via Claude Code's plugin system. The marketplace is defined in
-[.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) and is named
-`toyworks-agent-skills`:
+or, in Claude Code:
 
 ```bash
-/plugin marketplace add ToyWorks/agent-skills
+/plugin marketplace add ToyWorks/tool-toy-trash
+/plugin install t3-hardware-scoring@tool-toy-trash
 ```
 
-```bash
-/plugin install t3-hardware-scoring@toyworks-agent-skills
+Then hand your agent a product link:
+
+> Run a T3 audit on https://example.com/some-ai-pendant
+
+Any agent that supports the [Agent Skills standard](https://agentskills.io) can load it.
+
+## How it scores
+
+```text
+product page + reviews
+  └─ brand-blind          strip names, so the hype can't vote
+      ├─ tool auditor  ┐
+      ├─ toy auditor   ├─ fixed rubrics, verbatim evidence only, run in parallel
+      └─ trash auditor ┘
+          └─ eagle eye    re-check the fatal flags: "on-device" claims that can't be, apps it duplicates
+              └─ judge    normalize, apply the gates and the veto → label
 ```
 
-> Claude Code plugins are also supported in Factory's [Droid](https://docs.factory.ai/cli/configuration/plugins#claude-code-compatibility).
+- **Evidence first.** No score above 0 without a quote from the source text, and
+  a test checks that every quote really is in it.
+- **Math in code.** Normalization, the Gray Zone and the veto live in
+  [`synthesize_results.py`](skills/t3-hardware-scoring/scripts/synthesize_results.py),
+  not in the model's head.
+- **One veto.** A single Eagle Eye flag (privacy tension, a core flaw, app
+  redundancy) forces Trash into the label, however good the rest looks.
 
-### Other Installation Methods
+A run on the fictional AI pendant in the test fixtures (the "second memory" that
+promises nothing leaves the device, plus a $19/month plan):
 
-Agent skills can also be installed by using the below commands from [Playbooks](https://playbooks.com/skills) or [Context7](https://context7.com/docs/skills):
-
-```bash
-# Playbooks
-npx playbooks add skill toyworks/agent-skills
-
-# Context7
-npx ctx7 skills install /toyworks/agent-skills
+```text
+tool  33.3   toy  27.3   trash  71.4   composite  -38.1
+→ Trash (Eagle Eye)   confidence: Review Required
 ```
 
-## Adding New Skills
+## What's inside
 
-Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`,
-`description`), add any supporting `references/` and `scripts/`, then add a row
-to the table above.
+```text
+skills/t3-hardware-scoring/
+├── SKILL.md       the procedure the agent follows, step by step
+├── references/    auditor rubrics, brand blinding, Eagle Eye, the judge's rules
+├── scripts/       validate + merge the auditor reports, synthesize the verdict
+└── tests/         unit tests, a golden worked audit, link and consistency checks
+```
 
-The `description` is what an agent matches against when deciding whether to load
-the skill, so write it as a trigger, not a summary: name the user phrasings and
-artifacts that should invoke it.
+The rules in full: [`t3-classification.md`](skills/t3-hardware-scoring/references/t3-classification.md).
 
-## Testing
-
-Skills that ship scripts should ship tests for them. `t3-hardware-scoring` is
-the reference:
+## Hack on it
 
 ```bash
 skills/t3-hardware-scoring/tests/run_tests.sh
 ```
 
-Its `tests/fixtures/` holds a complete worked example — a fictional product's
-brand-blinded source text, the three auditor reports, and the classification
-they synthesize to. It serves as both a regression test and the reference for
-what correct output looks like.
+Stdlib Python only, no install step. CI runs the suite and a link check on every
+push and pull request.
 
-CI runs each skill's test suite plus a link check on every push and pull
-request. See [.github/workflows/test.yml](.github/workflows/test.yml).
-
-## Contributing
-
-We welcome contributions to improve existing skills or add new skills. Please
-submit a pull request, and make sure `run_tests.sh` passes.
+Change a rule and its test in the same commit; each test names the spec section
+it pins. Pull requests are welcome, especially new Eagle Eye red flags: add them
+to [`trash-red-flags.md`](skills/t3-hardware-scoring/references/trash-red-flags.md)
+first, and the trigger-consistency test will tell you where else they go.
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "toyworks-agent-skills",
-  "description": "Public agent skills maintained by the ToyWorks Team",
+  "name": "tool-toy-trash",
+  "description": "Tool, Toy, or Trash? An agent skill that audits AI hardware from its product page.",
   "owner": {
     "name": "ToyWorks Team"
   },
